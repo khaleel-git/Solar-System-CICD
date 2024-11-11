@@ -122,7 +122,7 @@ jobs:
                 echo Testing Image URL using wget
                 wget -q -O - 127.0.0.1:3000/live | grep live 
            
-            - name: Docker Build for Testing
+            - name: Docker Push
               uses: docker/build-push-action@v4
               with:
                 context: . # search for a dockerfile in a root dir
