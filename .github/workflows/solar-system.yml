@@ -96,7 +96,10 @@ jobs:
               with:
                 username: ${{ vars.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_PASSWORD }} 
-                
+
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+                  
             - name: Docker Build for Testing
               uses: docker/build-push-action@v4
               with:
@@ -118,4 +121,3 @@ jobs:
 
                 echo Testing Image URL using wget
                 wget -q -O - 127.0.0.1:3000/live | grep live 
-                
