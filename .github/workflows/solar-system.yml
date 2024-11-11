@@ -94,7 +94,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Dockerhub login
-              uses: docker/login-action@v2.2.20
+              uses: docker/login-action@v3
               with:
                 username: ${{ vars.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_PASSWORD }}           
