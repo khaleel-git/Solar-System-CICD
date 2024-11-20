@@ -75,7 +75,7 @@ jobs:
                 options:
                   --name mongo
         env:
-          MONGO_URI: 'mongodb://mongo:27017/superData'
+          MONGO_URI: 'mongodb://mongo:27017/superData' # mongodb url of service container
           MONGO_USERNAME: non-prod-user
           MONGO_PASSWORD: non-prod-password
 
