@@ -148,6 +148,7 @@ jobs:
                     -e MONGO_USERNAME=$MONGO_USERNAME \
                     -e MONGO_PASSWORD=$MONGO_PASSWORD \
                     ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+                
                 export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system-app)
                 echo $IP
 
@@ -162,3 +163,21 @@ jobs:
                 tags: |
                     ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
                     ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
+
+    dev-deploy:
+      needs: docker
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v4
+
+        - name: kubectl tool installer
+          uses: azure/setup-kubectl@v3
+
+        - name: Fetch kubernetes Cluster Details
+          run: | 
+            kubectl version --short
+            echo ---------------------------------------
+            kubectl get nodes
+
+      
