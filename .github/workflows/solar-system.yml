@@ -194,6 +194,9 @@ jobs:
       # needs: dev-integration-testing does not need to add this line now
       needs: docker
       runs-on: ubuntu-latest
+      env:
+        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
+        mongodb-password: ${{ secrets.MONGO_PASSWORD }}
       steps:
         - uses: actions/checkout@v4
         - uses: ./.github/workflows/resuse-deployment.yml
