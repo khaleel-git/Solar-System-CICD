@@ -167,20 +167,14 @@ jobs:
     dev-deploy:
       if: contains(github.ref, 'feature/')
       needs: docker
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
-
-        - name: Reuse Deployment Workflow
-          uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow
-          # uses: ./.github/workflows/resuse-deployment.yml
-          with:
-            mongodb-uri: ${{ vars.MONGO_URI }}
-            environment: development
-            k8s-manifest-dir: kubernetes/development/
-            k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
-            mongodb-password: ${{ secrets.MONGO_PASSWORD }}
+      uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow # Move this to top-level `uses`
+      secrets:
+        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
+        mongodb-password: ${{ secrets.MONGO_PASSWORD }}
+      with:
+        mongodb-uri: ${{ vars.MONGO_URI }}
+        environment: development
+        k8s-manifest-dir: kubernetes/development/
 
     dev-integration-testing:
       if: contains(github.ref, 'feature/')
