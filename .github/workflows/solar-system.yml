@@ -249,8 +249,8 @@ jobs:
       if: always()
       name: Slack Notification
       needs: 
-        - dev-integration-test
-        - prod-integration-test
+        - dev-integration-testing
+        - prod-integration-testing
       continue-on-error: true
       runs-on: ubuntu-latest
       steps:
