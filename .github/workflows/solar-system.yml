@@ -168,13 +168,13 @@ jobs:
       if: contains(github.ref, 'feature/')
       needs: docker
       runs-on: ubuntu-latest
-      env:
-        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
-        mongodb-password: ${{ secrets.MONGO_PASSWORD }}
       steps:
-        - uses: actions/checkout@v4
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
         - name: Reuse Deployment Workflow
-          uses: ./.github/workflows/resuse-deployment.yml
+          uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow
+          # uses: ./.github/workflows/resuse-deployment.yml
           with:
             mongodb-uri: ${{ vars.MONGO_URI }}
             environment: development
@@ -206,7 +206,7 @@ jobs:
         mongodb-password: ${{ secrets.MONGO_PASSWORD }}
       steps:
         - uses: actions/checkout@v4
-        - uses: ./.github/workflows/resuse-deployment.yml
+        - uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow
           with:
               mongodb-uri: ${{ vars.MONGO_URI }}
               environment: development
