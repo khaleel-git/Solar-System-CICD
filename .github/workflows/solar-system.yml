@@ -167,7 +167,7 @@ jobs:
     dev-deploy:
       if: contains(github.ref, 'feature/')
       needs: docker
-      uses: ./.github/workflows/resuse-deployment.yml@feature/exploring-workflow
+      uses: ./.github/workflows/resuse-deployment.yml@v1
 
     dev-integration-testing:
       if: contains(github.ref, 'feature/')
@@ -187,7 +187,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       # needs: dev-integration-testing does not need to add this line now
       needs: docker
-      uses: ./.github/workflows/resuse-deployment.yml@feature/exploring-workflow
+      uses: ./.github/workflows/resuse-deployment.yml@v1
 
 
     prod-integration-testing:
