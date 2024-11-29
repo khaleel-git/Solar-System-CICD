@@ -21,18 +21,18 @@ on:
           default: dev
           required: true
           type: string
+        # k8s-kubeconfig:
+        #   type: string
+        #   required: true
+        # mongodb-password:
+        #   type: string
+        #   required: true
+
+      secrets:
         k8s-kubeconfig:
-          type: string
           required: true
         mongodb-password:
-          type: string
           required: true
-
-      # secrets:
-      #   k8s-kubeconfig:
-      #     required: true
-      #   mongodb-password:
-      #     required: true
 
 jobs:
     reuse-deploy:
