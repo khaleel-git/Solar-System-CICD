@@ -1,9 +1,10 @@
 name: 'NPM Custom Action'
 description: 'Installing and Caching NPM packages'
 inputs: 
-  path-of-folder: # id of input
-    description: 'the path to cache'
+  path-of-folder: # ID of the input
+    description: 'The path to cache'
     required: true
+    default: 'node_modules'
 runs:
   using: "composite"
   steps:
@@ -16,4 +17,3 @@ runs:
     - name: Install Dependencies
       run: npm install
       shell: bash
-

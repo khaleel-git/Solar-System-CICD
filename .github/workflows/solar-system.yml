@@ -48,7 +48,7 @@ jobs:
             - name: Composite Action - Cache & Install NPM Packages
               uses: ./.github/custom-actions/npm-action  # composite action relative path, equal to the below code
               with:
-                path-of-folder: node_modules
+                path-of-folder: 'node_modules'
 
             
             # - name: Cache NPM dependencies
