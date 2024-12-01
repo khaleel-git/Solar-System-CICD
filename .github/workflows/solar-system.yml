@@ -44,14 +44,20 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version: ${{ matrix.nodejs_version }}
-            
-            - name: Cache NPM dependencies
-              uses: actions/cache@v3
+
+            - name: Composite Action - Cache & Install NPM Packages
+              uses: ./.github/custom-actions/npm-action  # composite action relative path, equal to the below code
               with:
-                path: node_modules
-                key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json')}}
-            - name: Install Dependencies
-              run: npm install
+                path-of-folder: node_modules
+
+            
+            # - name: Cache NPM dependencies
+            #   uses: actions/cache@v3
+            #   with:
+            #     path: node_modules
+            #     key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json')}}
+            # - name: Install Dependencies
+            #   run: npm install
             
             - name: Unit Testing
               id: nodejs-unit-testing-step
@@ -89,14 +95,19 @@ jobs:
             #   with:
             #     node-version: 18
 
-            - name: Cache NPM dependencies
-              uses: actions/cache@v3
+            - name: Composite Action - Cache & Install NPM Packages
+              uses: ./.github/custom-actions/npm-action  # composite action relative path, equal to the below code
               with:
-                path: node_modules
-                key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json')}}
+                path-of-folder: node_modules
 
-            - name: Install dependencies
-              run: npm install
+            # - name: Cache NPM dependencies
+            #   uses: actions/cache@v3
+            #   with:
+            #     path: node_modules
+            #     key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json')}}
+
+            # - name: Install dependencies
+            #   run: npm install
 
             - name: Check Code Coverage
               continue-on-error: true
@@ -193,57 +204,57 @@ jobs:
                     ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
                     ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
 
-    dev-deploy:
-      if: contains(github.ref, 'feature/')
-      needs: docker
-      uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow # Move this to top-level `uses`
-      secrets:
-        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
-        mongodb-password: ${{ secrets.MONGO_PASSWORD }}
-      with:
-        mongodb-uri: ${{ vars.MONGO_URI }}
-        environment: development
-        k8s-manifest-dir: kubernetes/development/
+    # dev-deploy:
+    #   if: contains(github.ref, 'feature/')
+    #   needs: docker
+    #   uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow # Move this to top-level `uses`
+    #   secrets:
+    #     k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     mongodb-password: ${{ secrets.MONGO_PASSWORD }}
+    #   with:
+    #     mongodb-uri: ${{ vars.MONGO_URI }}
+    #     environment: development
+    #     k8s-manifest-dir: kubernetes/development/
 
-    dev-integration-testing:
-      if: contains(github.ref, 'feature/')
-      name: Dev Integration Testing
-      needs: dev-deploy
-      runs-on: ubuntu-latest
-      steps:
-        - name: Test URL Output using CURL and JQ
-          env:
-            URL: ${{ needs.dev-deploy.outputs.application-url }}
-          run: |
-            eco $URL 
-            echo "-------------------------------------------"
-            curl https://$URL/live -s -k | jq -r .status | grep -i live
+    # dev-integration-testing:
+    #   if: contains(github.ref, 'feature/')
+    #   name: Dev Integration Testing
+    #   needs: dev-deploy
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - name: Test URL Output using CURL and JQ
+    #       env:
+    #         URL: ${{ needs.dev-deploy.outputs.application-url }}
+    #       run: |
+    #         eco $URL 
+    #         echo "-------------------------------------------"
+    #         curl https://$URL/live -s -k | jq -r .status | grep -i live
 
-    prod-deploy:
-      if: github.ref == 'refs/heads/main'
-      needs: docker
-      uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow # Move this to top-level `uses`
-      secrets:
-        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
-        mongodb-password: ${{ secrets.MONGO_PASSWORD }}
-      with:
-        mongodb-uri: ${{ vars.MONGO_URI }}
-        environment: development
-        k8s-manifest-dir: kubernetes/development/
+    # prod-deploy:
+    #   if: github.ref == 'refs/heads/main'
+    #   needs: docker
+    #   uses: khaleel-git/Solar-System-CICD/.github/workflows/resuse-deployment.yml@feature/exploring-workflow # Move this to top-level `uses`
+    #   secrets:
+    #     k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     mongodb-password: ${{ secrets.MONGO_PASSWORD }}
+    #   with:
+    #     mongodb-uri: ${{ vars.MONGO_URI }}
+    #     environment: development
+    #     k8s-manifest-dir: kubernetes/development/
 
-    prod-integration-testing:
-      if: github.ref == 'refs/heads/main'
-      name: Prod Integration Testing
-      needs: prod-deploy
-      runs-on: ubuntu-latest
-      steps:
-        - name: Test URL Output using CURL and JQ
-          env:
-            URL: ${{ needs.prod-deploy.outputs.APP_INGRESS_URL }}
-          run: |
-            eco $URL
-            echo "-------------------------------------------"
-            curl https://$URL/live -s -k | jq -r .status | grep -i live
+    # prod-integration-testing:
+    #   if: github.ref == 'refs/heads/main'
+    #   name: Prod Integration Testing
+    #   needs: prod-deploy
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - name: Test URL Output using CURL and JQ
+    #       env:
+    #         URL: ${{ needs.prod-deploy.outputs.APP_INGRESS_URL }}
+    #       run: |
+    #         eco $URL
+    #         echo "-------------------------------------------"
+    #         curl https://$URL/live -s -k | jq -r .status | grep -i live
     
     slack-notification:
       if: always()
